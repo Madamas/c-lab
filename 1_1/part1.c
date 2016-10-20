@@ -28,8 +28,8 @@ int subseq(const char *string1, const char *string2){
 	int length1 = strlen(string1);
 	int length2 = strlen(string2);
 	int *matrix = (int*)calloc((length1+1)*(length2+1),sizeof(int));
-	int max = *(matrix);
-	int maxi,maxj = 0;
+	int max,maxi,maxj;
+	max = maxi = maxj = 0;
  	for (int i = 0; i < length1; i++){
  		for (int j = 0; j < length2; j++){
  			if (*(string1+i) == *(string2+j)){
