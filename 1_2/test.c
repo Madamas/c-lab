@@ -14,6 +14,15 @@ int main()
 	printf("\n%d\n", argz_c);
 	for (size_t i = 0; i <= argz_len; i++)
 		printf("%c", *(argz+i));
+	printf("\n");
+	argz_delete(&argz,&argz_len,argz);
+	for (size_t i = 0; i <= argz_len; i++)
+		printf("%c", *(argz+i));
+	printf("\n");
+	argz_insert(&argz,&argz_len,argz,"kek");
+	for (size_t i = 0; i <= argz_len; i++)
+		printf("%c", *(argz+i));
+	printf("\n%s\n",argz_next (argz, argz_len, argz + 1));
 	} else printf("Error");
 	return 0;
 }
