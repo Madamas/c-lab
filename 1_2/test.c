@@ -7,22 +7,20 @@ int main()
 	size_t argz_len;
 	if (argz_create_sep ("SHELL=/bin/bash:usr=monty:PWD=/bin/monty:LANG=en_US.UTF-8", 58/*ASCII for : */, &argz, &argz_len) == OK)
 	{
-	for (size_t i = 0; i < argz_len; i++)
-		printf("%c", *(argz+i));
+	argz_print(argz,argz_len);
 	size_t argz_c = argz_count (argz, argz_len);
 	argz_add(&argz,&argz_len,"kekbung");
 	printf("\n%d\n", argz_c);
-	for (size_t i = 0; i <= argz_len; i++)
-		printf("%c", *(argz+i));
+	argz_print(argz,argz_len);
 	printf("\n");
 	argz_delete(&argz,&argz_len,argz);
-	for (size_t i = 0; i <= argz_len; i++)
-		printf("%c", *(argz+i));
+	argz_print(argz,argz_len);
 	printf("\n");
 	argz_insert(&argz,&argz_len,argz,"kek");
-	for (size_t i = 0; i <= argz_len; i++)
-		printf("%c", *(argz+i));
-	printf("\n%s\n",argz_next (argz, argz_len, argz + 1));
+	argz_print(argz,argz_len);
+	printf("\n");
+	argz_replace(&argz,&argz_len,"kek","buntag");
+	argz_print(argz,argz_len);
 	} else printf("Error");
 	return 0;
-}
+};

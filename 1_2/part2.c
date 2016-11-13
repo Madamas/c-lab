@@ -12,7 +12,7 @@ error_t argz_create_sep (const char *string, int sep, char **argz, size_t *argz_
 			*(*argz + i) = *(string + i);
 	}
 	return OK;
-};
+}
 
 size_t argz_count (const char *argz, size_t argz_len){
 	size_t argz_count = 0;
@@ -25,27 +25,27 @@ size_t argz_count (const char *argz, size_t argz_len){
 
 error_t argz_add (char **argz, size_t *argz_len, const char *str){
 	size_t length = strlen(str);
-	*argz_len = *argz_len + length + 1;
+	*argz_len = *argz_len + length;
 	*argz = realloc(*argz, (*argz_len)*sizeof(char));
 	for (size_t i = 0; i <= length;i++){
-		*(*argz+*argz_len-length+i+1) = *(str+i);
+		*(*argz+*argz_len-length+i) = *(str+i);
 	}
 	return OK;
 }
 void argz_delete (char **argz, size_t *argz_len,char *entry){
-	memmove(entry,entry + 1,(*argz_len-(entry - *argz)));
-	*argz_len = *argz_len - 1;
-	*argz = realloc(*argz,*argz_len*sizeof(char));
+	size_t length = strlen(entry);
+	memmove(entry,entry + length + 1,(*argz_len-(entry - *argz)));
+	*argz_len = *argz_len - length;
+	*argz = realloc(*argz,*argz_len);
 }
 error_t argz_insert (char **argz, size_t *argz_len, char *before, const char *entry){
-	size_t length = strlen(entry);
+	size_t length = strlen(entry)+1;
 	*argz_len = *argz_len + length;
-	*argz = realloc(*argz,*argz_len*sizeof(char));
-	//	return ENOMEM;
+	*argz = realloc(*argz,*argz_len);
 	if (before < *argz)
 		return ENOMEM;
 	memmove(before + length,before,*argz_len - (before - *argz));
-	memcpy(before,entry ,length);
+	memcpy(before,entry,length);
 	return OK;
 }
 
@@ -60,4 +60,42 @@ char * argz_next (char *argz, size_t argz_len, const char *entry){
 		}
 	}
 	return NULL;
+}
+
+error_t argz_replace(char **argz, size_t *argz_len, const char *str, const char *with){
+ size_t length1 = strlen(str);
+ size_t length2 = strlen(with);
+ if (length1 == 0 || length2 == 0)
+ 	return ENOMEM;
+ char *pointer = *argz;
+ char *begin = NULL;
+ while(pointer < *argz + *argz_len){
+ 	begin = strstr(pointer,str);
+ 	if (begin == NULL)
+ 	{
+ 		pointer = pointer + strlen(pointer) + 1;
+ 		continue;
+ 	}else break;
+ }
+ if (begin == NULL)
+ 	return ENOMEM;
+ if (length1 > length2){
+ 	 memmove(begin + length2,begin + length1,*argz_len - (begin - *argz + length1));
+ 	 *argz = realloc(*argz,*argz_len-length1+length2);
+ }else
+ if (length1 < length2){
+ 	*argz = realloc(*argz,*argz_len-length1+length2);
+ 	memmove(begin + length2,begin + length1,*argz_len - (begin - *argz + length1));
+ }
+ *argz_len = *argz_len - length1 + length2;
+ for(size_t i = 0; i < length2; i++){
+ 	*(begin + i) = *(with + i);
+ }
+ return OK;
+}
+
+void argz_print(const char *argz, size_t argz_len){
+	char *entry = NULL;
+	while ((entry = argz_next (argz, argz_len, entry)))
+		printf("%s\n",entry);
 }
