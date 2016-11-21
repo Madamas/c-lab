@@ -5,7 +5,7 @@ int main()
 	//char *const string = "SHELL=/bin/bash:usr=monty:PWD=/bin/monty:LANG=en_US.UTF-8";
 	char *argz;
 	size_t argz_len;
-	if (argz_create_sep ("SHELL=/bin/bash:usr=monty:PWD=/bin/monty:LANG=en_US.UTF-8", 58/*ASCII for : */, &argz, &argz_len) == OK)
+	if (argz_create_sep ("aabc:abc^", 58/*ASCII for : */, &argz, &argz_len) == OK)
 	{
 	argz_print(argz,argz_len);
 	size_t argz_c = argz_count (argz, argz_len);

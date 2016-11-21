@@ -11,21 +11,23 @@ void init(mem_dispatcher *md){
 
 int allocate(mem_dispatcher *md, int size){
 mem_chunk *minimal = md->first;
+int min_size = HEAP_SIZE;
 mem_chunk *buff = NULL;
 mem_chunk *current;
 
-	for(current = md->first->next; NULL != current; current=current->next)
+	for(current = md->first; NULL != current; current=current->next)
 	{
-		if(current->status==FREE && current->size <= minimal->size)
+		if(current->status==FREE && current->size <= min_size)
 		{
 			minimal = current;
+			min_size = current->size;
 		}
 	}
 
 if ((minimal == md->first && minimal->size < size) || NULL == (buff = (mem_chunk*)malloc(sizeof(mem_chunk))))
 	return -1;
 
-if(minimal->size == size){
+if(minimal->size == size && minimal->status == FREE){
 	minimal->status = ALLOCATED;
 	return minimal->id;
 }
@@ -73,14 +75,26 @@ void defragment(mem_dispatcher *md)
 	mem_chunk *end = md->first;
 	mem_chunk *buff = NULL;
 	
-	while (current != NULL)
+	while (NULL != current)
 	{
-		if (end == md->first && end->status != current->status)
+		if (end->status != current->status)
 		{
-			if (current->status == FREE)
+			if (FREE == current->status)
 			{
-				current->next = md->first;
-				md->first = current;
+				if (FREE == md->first->status)
+				{
+					md->first->size += current->size;
+					end->next = current->next;
+					free(current);
+					current = end;
+				}
+				else
+				{
+					end->next = current->next;
+					current->next = md->first;
+					md->first = current;
+					current = end;
+				}
 			}
 			else
 			{
