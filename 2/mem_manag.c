@@ -17,7 +17,7 @@ mem_chunk *current;
 
 	for(current = md->first; NULL != current; current=current->next)
 	{
-		if(current->status==FREE && current->size <= min_size)
+		if(current->status==FREE && current->size <= min_size && current->size >= size)
 		{
 			minimal = current;
 			min_size = current->size;
